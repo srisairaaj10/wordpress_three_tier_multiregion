@@ -1,0 +1,39 @@
+version: 0.2
+#us-east-2
+env:
+  variables:
+    TERRAFORM_VERSION: "1.6.4"
+    TF_COMMAND: "apply"
+    #TF_COMMAND: "destroy"
+  parameter-store:
+    AWS_ACCESS_KEY_ID: "/CodeBuild/MY_AWS_ACCESS_KEY_ID"
+    AWS_SECRET_ACCESS_KEY: "/CodeBuild/MY_AWS_SECRET_ACCESS_KEY"
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    on-failure: ABORT
+    commands:
+      - sudo yum install -y yum-utils
+      - sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+      - sudo yum -y install terraform
+      - terraform --version
+  pre_build:
+    on-failure: ABORT
+    commands:
+      - echo terraform execution started on `date`
+  build:
+    on-failure: ABORT
+    commands:
+      # Project-1: AWS VPC, ASG, ALB, Route53, ACM, Security Groups and SNS
+      - cd "$CODEBUILD_SRC_DIR/src/infrastructure"
+      - ls -lrt "$CODEBUILD_SRC_DIR/src/infrastructure"
+      - terraform init -input=false -var="region=us-east-1" -var="zone_one=us-east-1a" -var="zone_two=us-east-1b" --backend-config=dev.conf
+      - terraform validate
+      - terraform plan -var="region=us-east-1" -var="zone_one=us-east-1a" -var="zone_two=us-east-1b" 
+      - terraform apply -var="region=us-east-1" -var="zone_one=us-east-1a" -var="zone_two=us-east-1b" -auto-approve
+  post_build:
+    on-failure: CONTINUE
+    commands:
+      - echo terraform execution completed on `date`
