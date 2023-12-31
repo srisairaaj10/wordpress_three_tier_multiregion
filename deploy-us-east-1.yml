@@ -29,7 +29,7 @@ phases:
       # Project-1: AWS VPC, ASG, ALB, Route53, ACM, Security Groups and SNS
       - cd "$CODEBUILD_SRC_DIR/src/infrastructure"
       - ls -lrt "$CODEBUILD_SRC_DIR/src/infrastructure"
-      - terraform init -input=false -var="region=us-east-1" -var="zone_one=us-east-1a" -var="zone_two=us-east-1b" --backend-config=dev.conf
+      - terraform init -input=false -var="region=us-east-1" -var="zone_one=us-east-1a" -var="zone_two=us-east-1b" --backend-config=stag.conf
       - terraform validate
       - terraform plan -var="region=us-east-1" -var="zone_one=us-east-1a" -var="zone_two=us-east-1b" 
       - terraform apply -var="region=us-east-1" -var="zone_one=us-east-1a" -var="zone_two=us-east-1b" -auto-approve
