@@ -5,9 +5,9 @@ files:
     destination: /var/www/html/
 hooks:
   BeforeInstall:
-    - location: scripts/install_dependencies
+    - location: "$CODEBUILD_SRC_DIR/src/config"
       timeout: 300
       runas: root
-    - location: scripts/start_server
+    - location: "$CODEBUILD_SRC_DIR/src/config"
       timeout: 300
       runas: root
